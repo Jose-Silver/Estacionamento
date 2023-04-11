@@ -1,0 +1,37 @@
+<html>
+<head>
+<title>modelo.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #a9b7c6;}
+.s1 { color: #cc7832;}
+.s2 { color: #6a8759;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+modelo.java</font>
+</center></td></tr></table>
+<pre>    <span class="s1">package </span><span class="s0">br.com.uniamerica.estacionamento.entity</span><span class="s1">;</span>
+
+
+    <span class="s1">import </span><span class="s0">jakarta.persistence.*</span><span class="s1">;</span>
+    <span class="s1">import </span><span class="s0">lombok.Getter</span><span class="s1">;</span>
+    <span class="s1">import </span><span class="s0">lombok.Setter</span><span class="s1">;</span>
+
+    <span class="s0">@Entity</span>
+    <span class="s0">@Table(name = </span><span class="s2">&quot;modelos&quot;</span><span class="s1">, </span><span class="s0">schema = </span><span class="s2">&quot;public&quot;</span><span class="s0">)</span>
+    <span class="s1">public class </span><span class="s0">modelo </span><span class="s1">extends </span><span class="s0">AbstractEntity {</span>
+        <span class="s0">@Column(name = </span><span class="s2">&quot;nome&quot;</span><span class="s1">, </span><span class="s0">nullable = </span><span class="s1">false, </span><span class="s0">unique = </span><span class="s1">true</span><span class="s0">)</span>
+        <span class="s0">@Getter @Setter</span>
+        <span class="s1">private </span><span class="s0">String nome</span><span class="s1">;</span>
+        <span class="s0">@Column(name = </span><span class="s2">&quot;marca&quot;</span><span class="s1">, </span><span class="s0">nullable = </span><span class="s1">false</span><span class="s0">)</span>
+        <span class="s0">@Getter @Setter</span>
+        <span class="s0">@OneToMany</span>
+        <span class="s1">private </span><span class="s0">Marcas marca</span><span class="s1">;</span>
+    <span class="s0">}</span>
+</pre>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<html>
+<head>
+<title>Configuracao.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #6a8759;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Configuracao.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">br.com.uniamerica.estacionamento.entity</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">jakarta.persistence.Column</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">jakarta.persistence.Entity</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">jakarta.persistence.Table</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">jakarta.persistence.criteria.CriteriaBuilder</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">lombok.Getter</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">lombok.Setter</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">org.springframework.cglib.core.Local</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">java.math.BigDecimal</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.time.LocalDateTime</span><span class="s0">;</span>
+
+<span class="s1">@Entity</span>
+<span class="s1">@Table(name = </span><span class="s2">&quot;configuracoes&quot;</span><span class="s0">, </span><span class="s1">schema = </span><span class="s2">&quot;public&quot;</span><span class="s1">)</span>
+<span class="s0">public class </span><span class="s1">Configuracao </span><span class="s0">extends </span><span class="s1">AbstractEntity {</span>
+<span class="s1">@Column(name = </span><span class="s2">&quot;valor_hora&quot;</span><span class="s1">)</span>
+    <span class="s1">@Getter @Setter</span>
+    <span class="s0">private </span><span class="s1">BigDecimal ValorHora</span><span class="s0">;</span>
+    <span class="s1">@Column(name = </span><span class="s2">&quot;valor_multa&quot;</span><span class="s1">)</span>
+    <span class="s1">@Getter @Setter</span>
+    <span class="s0">private </span><span class="s1">BigDecimal ValorMulta</span><span class="s0">;</span>
+    <span class="s1">@Column(name = </span><span class="s2">&quot;inicio_expediente&quot;</span><span class="s1">)</span>
+    <span class="s1">@Getter @Setter</span>
+    <span class="s0">private </span><span class="s1">LocalDateTime InicioExpediente</span><span class="s0">;</span>
+    <span class="s1">@Column(name = </span><span class="s2">&quot;tempo_parado_desconto&quot;</span><span class="s1">)</span>
+    <span class="s1">@Getter @Setter</span>
+    <span class="s0">private </span><span class="s1">LocalDateTime TempoParadoDesconto</span><span class="s0">;</span>
+    <span class="s1">@Column(name = </span><span class="s2">&quot;tempo_de_desconto&quot;</span><span class="s1">)</span>
+    <span class="s1">@Getter @Setter</span>
+    <span class="s0">private </span><span class="s1">LocalDateTime TempoDeDesconto</span><span class="s0">;</span>
+    <span class="s1">@Column(name = </span><span class="s2">&quot;gerar_desconto&quot;</span><span class="s1">)</span>
+    <span class="s1">@Getter @Setter</span>
+    <span class="s0">private </span><span class="s1">Boolean GerarDesconto</span><span class="s0">;</span>
+    <span class="s1">@Column(name = </span><span class="s2">&quot;vagas_moto&quot;</span><span class="s1">)</span>
+    <span class="s1">@Getter @Setter</span>
+    <span class="s0">private </span><span class="s1">Integer VagasMoto</span><span class="s0">;</span>
+    <span class="s1">@Column(name = </span><span class="s2">&quot;vagas_carro&quot;</span><span class="s1">)</span>
+    <span class="s1">@Getter @Setter</span>
+    <span class="s0">private </span><span class="s1">Integer VagasCarro</span><span class="s0">;</span>
+    <span class="s1">@Column(name = </span><span class="s2">&quot;vagas_vam&quot;</span><span class="s1">)</span>
+    <span class="s1">@Getter @Setter</span>
+    <span class="s0">private </span><span class="s1">Integer VagasVam</span><span class="s0">;</span>
+
+<span class="s1">}</span>
+</pre>
+</body>
+</html>
