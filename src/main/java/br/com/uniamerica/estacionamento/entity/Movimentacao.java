@@ -1,54 +1,60 @@
 package br.com.uniamerica.estacionamento.entity;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
 
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "movimentacoes", schema = "public")
-    public class Movimentacao extends AbstractEntity {
-        @Getter
-        @JoinColumn(name = "veiculo", nullable = false, unique = true)
-        @ManyToOne
-        private Veiculo veiculo;
-        @Getter
-        @JoinColumn(name = "condutor", nullable = false)
-        @ManyToOne
-        private Condutor condutor;
-        @Getter
-        @Column(name = "entrada_veiculo", nullable = false)
-        private LocalDateTime entrada;
-        @Getter
-        @Column(name = "saida_veiculo")
-        private LocalDateTime saida;
-        @Getter
-        @Column(name = "tempo")
-        private LocalDate tempo;
-        @Getter
-        @Column(name = "tempo_Desconto")
-        private LocalDate tempoDesconto;
-        @Getter
-        @Column(name = "tempo_multa")
-        private LocalDate tempoMulta;
-        @Getter
-        @Column(name = "valor_desconto")
-        private BigDecimal valorDesconto;
-        @Getter
-        @Column(name = "valor_multa")
-        private BigDecimal valorMulta;
-        @Getter
-        @Column(name = "valot_total")
-        private BigDecimal valorTotal;
-        @Getter
-        @Column(name = "valor_hora")
-        private BigDecimal valorHora;
-        @Getter
-        @Column(name = "valorHoraMulta")
-        private BigDecimal valorHoraMulta;
+@Table(name = "movimentacao", schema = "public")
+public class Movimentacao extends AbstractEntity{
+    @Getter @Setter
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "veiculo_id", nullable = false, unique = true)
+    private Veiculo veiculo;
+    @Getter @Setter
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "condutor_id", nullable = false)
+    private Condutor condutor;
+    @Getter @Setter
+    @Column(name = "entrada",nullable = false)
+    private LocalDateTime entrada;
+    @Getter @Setter
+    @Column(name = "saida")
+    private LocalDateTime saida;
+    @Getter @Setter
+    @Column(name = "tempo")
+    private LocalTime tempo;
+    @Getter @Setter
+    @Column(name = "tempo_desconto")
+    private LocalTime tempoDesconto;
+    @Getter @Setter
+    @Column(name = "tempo_multa")
+    private LocalTime tempoMulta;
+    @Getter @Setter
+    @Column(name = "valor_desconto")
+    private BigDecimal valorDesconto;
+    @Getter @Setter
+    @Column(name = "valor_multa")
+    private BigDecimal valorMulta;
+    @Getter @Setter
+    @Column(name = "valor_total")
+    private BigDecimal valorTotal;
+    @Getter @Setter
+    @Column(name = "valor_hora")
+    private BigDecimal valorHora;
+    @Getter @Setter
+    @Column(name = "valor_hora_multa")
+    private BigDecimal valorHoraMulta;
+
         public Movimentacao() {
         }
 

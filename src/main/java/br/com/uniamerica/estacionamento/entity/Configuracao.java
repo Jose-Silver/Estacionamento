@@ -11,35 +11,44 @@ import org.springframework.cglib.core.Local;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import java.math.BigDecimal;
+import java.time.LocalTime;
+
+
+
 @Entity
-@Table(name = "configuracoes", schema = "public")
-public class Configuracao extends AbstractEntity {
-@Column(name = "valor_hora")
+@Table(name = "configuracao", schema = "public")
+public class Configuracao extends AbstractEntity{
     @Getter @Setter
-    private BigDecimal ValorHora;
-    @Column(name = "valor_multa")
+    @Column(name = "valor_hora")
+    private BigDecimal valorHora;
     @Getter @Setter
-    private BigDecimal ValorMulta;
+    @Column(name = "valor_minuto_hora")
+    private BigDecimal valorMinutoHora;
+    @Getter @Setter
     @Column(name = "inicio_expediente")
+    private LocalTime inicioExpediente;
     @Getter @Setter
-    private LocalDateTime InicioExpediente;
-    @Column(name = "tempo_parado_desconto")
+    @Column(name = "fim_expediente")
+    private LocalTime fimExpediente;
     @Getter @Setter
-    private LocalDateTime TempoParadoDesconto;
+    @Column(name = "tempo_para_desconto")
+    private LocalTime tempoParaDesconto;
+    @Getter @Setter
     @Column(name = "tempo_de_desconto")
+    private LocalTime tempoDeDesconto;
     @Getter @Setter
-    private LocalDateTime TempoDeDesconto;
     @Column(name = "gerar_desconto")
+    private boolean gerarDesconto;
     @Getter @Setter
-    private Boolean GerarDesconto;
-    @Column(name = "vagas_moto")
-    @Getter @Setter
-    private Integer VagasMoto;
     @Column(name = "vagas_carro")
+    private int vagasCarro;
     @Getter @Setter
-    private Integer VagasCarro;
-    @Column(name = "vagas_vam")
+    @Column(name = "vagas_moto")
+    private int vagasMoto;
     @Getter @Setter
-    private Integer VagasVam;
+    @Column(name = "vagas_van")
+    private int vagasVan;
+
 
 }
