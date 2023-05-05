@@ -13,9 +13,9 @@ import java.util.Optional;
 @Repository
 public interface MarcaRepository extends JpaRepository<Marca, Long> {
 
-    @Modifying
-    @Query("UPDATE marcas c SET c.ativo = false WHERE c.id = :id")
-    void desativar(@Param("id") Long id);
+//    @Modifying
+//    @Query("UPDATE marcas c SET c.ativo = false WHERE c.id = :id")
+//    void desativar(@Param("id") Long id);
 
 }
 

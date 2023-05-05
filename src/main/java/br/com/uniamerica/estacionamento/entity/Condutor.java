@@ -28,9 +28,4 @@ public class Condutor extends AbstractEntity {
     @Column(name = "tempo_desconto")
     private LocalTime tempoDesconto;
 
-
-
-    // Getter and setter for movimentacoes
-
-
 }

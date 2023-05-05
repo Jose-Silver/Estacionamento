@@ -9,8 +9,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CondutorRepository extends JpaRepository<Condutor, Long> {
-    @Modifying
-    @Query("UPDATE Condutores c SET c.ativo = false WHERE c.id = :id")
-    void desativar(@Param("id") Long id);
+//    @Modifying
+//    @Query("UPDATE condutores c SET c.ativo = false WHERE c.id = :id")
+//    void desativar(@Param("id") Long id);
 
 }

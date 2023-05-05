@@ -9,10 +9,10 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface VeiculoRepository extends JpaRepository <Veiculo, Long> {
-    @Modifying
-    @Query("UPDATE veiculos c SET c.ativo = false WHERE c.id = :id")
-    void desativar(@Param("id") Long id);
+//    @Modifying
+//    @Query("UPDATE veiculos c SET c.ativo = false WHERE c.id = :id")
+//    void desativar(@Param("id") Long id);
 
 
-    void update(Veiculo veiculo);
+//    void update(Veiculo veiculo);
 }
