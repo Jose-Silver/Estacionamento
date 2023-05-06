@@ -12,12 +12,15 @@
         @Getter @Setter
         private String nome;
 
+        @ManyToOne
+        @JoinColumn(nullable = false, name = "marca")
+        @Getter @Setter
+        private Marca marca;
+
         public Modelo() {
         }
 
-        /** @Enumerated(EnumType.STRING)
-        @Column(name = "marca", nullable = false)
-        private Marcas marca;**/
+
 
 
         public Modelo(String nome) {

@@ -2,6 +2,7 @@ package br.com.uniamerica.estacionamento.dtos;
 
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,10 +20,15 @@ import java.util.Map;
 
 @Data
 public class CondutorDTOS {
+   @Size(max = 50, message = "Erro: o nome nao pode possuir mais que 50 caracteres")
     @NotBlank(message = "Erro: nome em branco")
     private String nome;
+
+   @Size(max = 20, message = "o cpf nao pode conter mais que 20 caracteres")
     @NotBlank(message = "Erro: cpf em branco")
     private String cpf;
+    @Size(max = 20, message = "o telefone nao pode conter mais que 20 caracteres")
+
     @NotBlank(message = "Erro: telefone me branco")
     private String telefone;
 

@@ -1,65 +1,101 @@
 package br.com.uniamerica.estacionamento.controller;
 
-import br.com.uniamerica.estacionamento.entity.Configuracao;
-import br.com.uniamerica.estacionamento.entity.Marca;
+import br.com.uniamerica.estacionamento.controller.exeption.NotFoundException;
+import br.com.uniamerica.estacionamento.dtos.MovimentacaoDTOS;
 import br.com.uniamerica.estacionamento.entity.Movimentacao;
-import br.com.uniamerica.estacionamento.repository.ConfiguracaoRepository;
-import br.com.uniamerica.estacionamento.repository.MovimentacaoRepository;
+import br.com.uniamerica.estacionamento.repository.MarcaRepository;
+import br.com.uniamerica.estacionamento.service.MovimentacaoService;
+import jakarta.validation.Valid;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+import org.yaml.snakeyaml.constructor.DuplicateKeyException;
 
-import java.util.List;
-import java.util.Optional;
-
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
-@RequestMapping("/movimentacao/")
+@RequestMapping("/movimentacao")
 public class MovimentacaoController {
-//
-//    @Autowired
-//    private MovimentacaoRepository service;
-//    @RequestMapping(value = "/{id}", method = RequestMethod.GET,
-//            produces = MediaType.APPLICATION_JSON_VALUE )
-//
-//    public Optional<Movimentacao> findById(
-//            @PathVariable(value = "id") String id
-//    ){
-//        return service.findById(Long.valueOf(id));
-//    };
-//
-//    @RequestMapping(value = "/all", method = RequestMethod.GET,
-//            produces = MediaType.APPLICATION_JSON_VALUE )
-//
-//    public List<Movimentacao> findAll( ){
-//        return service.findAll();
-//    };
-//    @RequestMapping(value = "/create", method = RequestMethod.POST,
-//            consumes = MediaType.APPLICATION_JSON_VALUE,
-//            produces = MediaType.APPLICATION_JSON_VALUE )
-//
-//    public ResponseEntity<?> create(@RequestBody final Movimentacao movimentacao){
-//        this.service.save(movimentacao);
-//        return ResponseEntity.ok("config criada");
+
+    @Autowired
+    private MovimentacaoService service;
+
+    @Autowired
+    private MarcaRepository marcarepository;
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE )
+
+    public ResponseEntity<?> findById(
+            @PathVariable(value = "id") Long id
+    ){
+        return service.findById(id);
+    };
+
+    @ExceptionHandler(NotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<String> handleNotFoundException(NotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+
+
+
+
+    @RequestMapping(value = "/all", method = RequestMethod.GET)
+
+    public ResponseEntity<?> findAll( ){
+        return service.findAll();
+    };
+
+    @PostMapping
+    public ResponseEntity<?> create(@RequestBody @Valid MovimentacaoDTOS movimentacaoDTOS){
+
+
+        return service.create(movimentacaoDTOS);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Map<String, String> handleValidationException (MethodArgumentNotValidException exception){
+        Map<String,String> errors = new HashMap<>();
+        exception.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldname = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldname, errorMessage);
+        });
+
+        return errors;
+    };
+
+    @ExceptionHandler(br.com.uniamerica.estacionamento.controller.exeption.DuplicateKeyException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ResponseEntity<String> handleDuplicateKeyException(DuplicateKeyException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> updateEntity(@PathVariable Long id, @RequestBody  @Valid MovimentacaoDTOS movimentacaoDTOS) {
+
+        return service.update(id, movimentacaoDTOS);
+    }
+
+
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deletar(@PathVariable Long id) {
+        return  service.delete(id);
+    }
 //    }
-//    @RequestMapping(value = "/modelo/atualiza", method = RequestMethod.PUT,
-//            consumes = MediaType.APPLICATION_JSON_VALUE,
-//            produces = MediaType.APPLICATION_JSON_VALUE )
-//
-//    public ResponseEntity<?> update(@RequestBody Movimentacao movimentacao){
-//        this.service.save(movimentacao);
-//        return ResponseEntity.ok("registro atualizado");
-//    }
-//
-//    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
-//
-//    public ResponseEntity<?> delete(   @PathVariable (value = "id") Long id){
-//        final Movimentacao movDeletado = this.service.findById(id).orElse(null);
-//
-//        this.service.delete(movDeletado);
-//        return ResponseEntity.ok("registro excluido");
-//    }
-//
+
+
+
 
 }

@@ -1,80 +1,101 @@
 package br.com.uniamerica.estacionamento.controller;
 
-import br.com.uniamerica.estacionamento.entity.Condutor;
+import br.com.uniamerica.estacionamento.controller.exeption.NotFoundException;
+import br.com.uniamerica.estacionamento.dtos.MarcaDTOS;
 import br.com.uniamerica.estacionamento.entity.Marca;
-import br.com.uniamerica.estacionamento.entity.Modelo;
-import br.com.uniamerica.estacionamento.repository.MarcaRepository;
+import br.com.uniamerica.estacionamento.service.MarcaService;
+import jakarta.validation.Valid;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+import org.yaml.snakeyaml.constructor.DuplicateKeyException;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
-@RequestMapping("/marca/")
+@RequestMapping("/marca")
 public class MarcaController {
-//
-//
-//    @Autowired
-//    private MarcaRepository service;
-//    @RequestMapping(value = "/{id}", method = RequestMethod.GET,
-//            produces = MediaType.APPLICATION_JSON_VALUE )
-//
-//    public Optional<Marca> findById(
-//            @PathVariable(value = "id") String id
-//    ){
-//        return service.findById(Long.valueOf(id));
-//    };
-//
-//    @RequestMapping(value = "/all", method = RequestMethod.GET,
-//            produces = MediaType.APPLICATION_JSON_VALUE )
-//
-//    public List<Marca> findAll( ){
-//        return service.findAll();
-//    };
-//
-//
-//    @RequestMapping(value = "/active", method = RequestMethod.GET,
-//            produces = MediaType.APPLICATION_JSON_VALUE )
-//
-//    public List<Marca> findActive( ){
-//        List<Marca> Marcas = service.findAll();
-//        return Marcas.stream().filter(Marca::isAtivo).collect(Collectors.toList());
-//    };
-//
-//
-//
-//
-//
-//    @RequestMapping(value = "/create", method = RequestMethod.POST,
-//            consumes = MediaType.APPLICATION_JSON_VALUE,
-//            produces = MediaType.APPLICATION_JSON_VALUE )
-//
-//    public ResponseEntity<?> create(@RequestBody final Marca Marca){
-//        this.service.save(Marca);
-//        return ResponseEntity.ok("Marca criada");
+
+    @Autowired
+    private MarcaService service;
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE )
+
+    public ResponseEntity<?> findById(
+            @PathVariable(value = "id") Long id
+    ){
+        return service.findById(id);
+    };
+
+    @ExceptionHandler(NotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<String> handleNotFoundException(NotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+
+
+
+
+    @RequestMapping(value = "/all", method = RequestMethod.GET)
+
+    public ResponseEntity<?> findAll( ){
+        return service.findAll();
+    };
+    @RequestMapping(value = "/ativos", method = RequestMethod.GET)
+    public ResponseEntity<?> findAtivo( ){
+        return service.findAtivo();
+    };
+
+    @PostMapping
+    public ResponseEntity<?> create(@RequestBody @Valid  MarcaDTOS marcaDTOS){
+        Marca marca = new Marca();
+        BeanUtils.copyProperties(marcaDTOS,marca);
+
+        return service.create(marca);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Map<String, String> handleValidationException (MethodArgumentNotValidException exception){
+        Map<String,String> errors = new HashMap<>();
+        exception.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldname = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldname, errorMessage);
+        });
+
+        return errors;
+    };
+
+    @ExceptionHandler(br.com.uniamerica.estacionamento.controller.exeption.DuplicateKeyException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ResponseEntity<String> handleDuplicateKeyException(DuplicateKeyException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> updateEntity(@PathVariable Long id, @RequestBody  @Valid MarcaDTOS marcaDTOS) {
+
+        return service.update(id, marcaDTOS);
+    }
+
+
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deletar(@PathVariable Long id) {
+        return  service.delete(id);
+    }
 //    }
-//
-//
-//    @RequestMapping(value = "/modelo/atualiza", method = RequestMethod.PUT,
-//            consumes = MediaType.APPLICATION_JSON_VALUE,
-//            produces = MediaType.APPLICATION_JSON_VALUE )
-//
-//    public ResponseEntity<?> update(@RequestBody Marca Marca){
-//        this.service.save(Marca);
-//        return ResponseEntity.ok("registro atualizado");
-//    }
-//    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
-//
-//    public ResponseEntity<?> delete(   @PathVariable (value = "id") Long id){
-//        final Marca MarcaDeletado = this.service.findById(id).orElse(null);
-//
-//        this.service.delete(MarcaDeletado);
-//        return ResponseEntity.ok("registro excluido");
-//    }
+
+
 
 
 }

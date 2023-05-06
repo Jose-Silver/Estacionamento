@@ -1,9 +1,8 @@
 package br.com.uniamerica.estacionamento.controller;
 
 import br.com.uniamerica.estacionamento.controller.exeption.NotFoundException;
-import br.com.uniamerica.estacionamento.dtos.CondutorDTOS;
-import br.com.uniamerica.estacionamento.entity.Condutor;
-import br.com.uniamerica.estacionamento.service.CondutorService;
+import br.com.uniamerica.estacionamento.entity.Configuracao;
+import br.com.uniamerica.estacionamento.service.ConfigService;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.yaml.snakeyaml.constructor.DuplicateKeyException;
@@ -20,11 +18,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/condutor")
-public class CondutorController {
+@RequestMapping("/config")
+public class ConfigController {
 
     @Autowired
-    private CondutorService service;
+    private ConfigService service;
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE )
@@ -41,27 +39,16 @@ public class CondutorController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
-
-
-
     @RequestMapping(value = "/all", method = RequestMethod.GET)
 
     public ResponseEntity<?> findAll( ){
         return service.findAll();
     };
 
-    @RequestMapping(value = "/ativos", method = RequestMethod.GET)
-    public ResponseEntity<?> findAtivo( ){
-        return service.findAtivo();
-    };
-
-
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody @Valid  CondutorDTOS condutorDTOS){
-        Condutor condutor = new Condutor();
-        BeanUtils.copyProperties(condutorDTOS,condutor);
+    public ResponseEntity<?> create(@RequestBody @Valid  Configuracao configuracao){
 
-        return service.create(condutor);
+        return service.create(configuracao);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -84,9 +71,9 @@ public class CondutorController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateEntity(@PathVariable Long id, @RequestBody  @Valid CondutorDTOS condutorDTOS) {
+    public ResponseEntity<?> updateEntity(@PathVariable Long id, @RequestBody  @Valid Configuracao configuracao) {
 
-        return service.update(id, condutorDTOS);
+        return service.update(id, configuracao);
     }
 
 
@@ -95,9 +82,6 @@ public class CondutorController {
     public ResponseEntity<?> deletar(@PathVariable Long id) {
         return  service.delete(id);
     }
-//    }
-
-
 
 
 }

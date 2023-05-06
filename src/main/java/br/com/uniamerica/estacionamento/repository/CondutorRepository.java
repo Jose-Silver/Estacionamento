@@ -7,10 +7,18 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface CondutorRepository extends JpaRepository<Condutor, Long> {
 //    @Modifying
 //    @Query("UPDATE condutores c SET c.ativo = false WHERE c.id = :id")
 //    void desativar(@Param("id") Long id);
+
+    @Query("SELECT c FROM Condutor c WHERE c.cpf = :cpf")
+    List<Condutor> findByCpf(@Param("cpf") String cpf);
+
+
+
 
 }
