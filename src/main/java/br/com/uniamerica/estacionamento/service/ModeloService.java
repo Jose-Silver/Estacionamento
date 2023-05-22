@@ -5,10 +5,7 @@ import br.com.uniamerica.estacionamento.entity.Marca;
 import br.com.uniamerica.estacionamento.entity.Modelo;
 import br.com.uniamerica.estacionamento.repository.MarcaRepository;
 import br.com.uniamerica.estacionamento.repository.ModeloRepository;
-import br.com.uniamerica.estacionamento.repository.ModeloRepository;
-import br.com.uniamerica.estacionamento.repository.MovimentacaoRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +22,7 @@ public class ModeloService {
 
     @Autowired
     private ModeloRepository repository;
+    @Autowired
     private MarcaRepository marcarepository;
 
     @Transactional
@@ -65,29 +62,36 @@ public class ModeloService {
         if (optionalModelo.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Modelo not found with ID: " + id);
         } else {
-            Modelo modelo1 = optionalModelo.get();
-            //BeanUtils.copyProperties(modeloDTOS, modelo1);
-            modelo1.setNome(modeloDTOS.getNome());
-            modelo1.setMarca(marcarepository.getById(modeloDTOS.getMarca()));
-            modelo1.setAtualizacao(LocalDateTime.now());
-            repository.save(modelo1);
+            Modelo modelo = optionalModelo.get();
+            //BeanUtils.copyProperties(modeloDTOS, modelo);
+            modelo.setNome(modeloDTOS.getNome());
+            modelo.setAtualizacao(LocalDateTime.now());
+            repository.save(modelo);
             return ResponseEntity.ok().body("Modelo atualizado com sucesso");
         }
     }
 
     @Transactional
-    public ResponseEntity<?> create(Modelo modelo) {
+    public ResponseEntity<?> create(ModeloDTOS modeloDTOS) {
+
 
         try {
+
+            Modelo modelo = new Modelo();
+            modelo.setNome(modeloDTOS.getNome());
+            Long marca_id = modeloDTOS.getMarca();
+            Marca marca1 = marcarepository.getById(marca_id);
+            modelo.setMarca(marca1);
+            modelo.setAtualizacao(LocalDateTime.now());
             modelo.setAtivo(true);
             repository.save(modelo);
             TransactionAspectSupport.currentTransactionStatus().flush();
             return ResponseEntity.status(HttpStatus.CREATED).body(modelo);
         } catch (Exception e) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            return ResponseEntity.badRequest().body(e.toString());
-        }
+            return ResponseEntity.badRequest().body(e.getCause().getCause().getLocalizedMessage());
 
+        }
     }
     @Transactional
     public ResponseEntity<?> delete (Long id) {

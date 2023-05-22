@@ -2,28 +2,29 @@
 
 
     import jakarta.persistence.*;
+    import lombok.AllArgsConstructor;
     import lombok.Getter;
+    import lombok.NoArgsConstructor;
     import lombok.Setter;
 
     @Entity
     @Table(name = "modelos", schema = "public")
+    @AllArgsConstructor
+    @NoArgsConstructor
     public class Modelo extends AbstractEntity {
         @Column(name = "nome", unique = true)
         @Getter @Setter
         private String nome;
 
         @ManyToOne
-        @JoinColumn(nullable = false, name = "marca")
         @Getter @Setter
+        @JoinColumn(nullable = false, name = "marca")
         private Marca marca;
 
-        public Modelo() {
-        }
 
 
 
 
-        public Modelo(String nome) {
-            this.nome = nome;
-        }
+
+
     }

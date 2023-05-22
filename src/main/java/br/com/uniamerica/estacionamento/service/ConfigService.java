@@ -64,7 +64,8 @@ public class ConfigService {
                 return ResponseEntity.status(HttpStatus.CREATED).body(configuracao);
             } catch (Exception e) {
                 TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-                return ResponseEntity.badRequest().body(e.toString());
+                return ResponseEntity.badRequest().body(e.getCause().getCause().getLocalizedMessage());
+
             }
 
     }

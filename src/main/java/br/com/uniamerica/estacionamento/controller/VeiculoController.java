@@ -3,6 +3,7 @@ package br.com.uniamerica.estacionamento.controller;
 import br.com.uniamerica.estacionamento.controller.exeption.NotFoundException;
 import br.com.uniamerica.estacionamento.dtos.VeiculoDTOS;
 import br.com.uniamerica.estacionamento.entity.Veiculo;
+import br.com.uniamerica.estacionamento.repository.ModeloRepository;
 import br.com.uniamerica.estacionamento.service.VeiculoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
@@ -25,6 +26,9 @@ public class VeiculoController {
 
     @Autowired
     private VeiculoService service;
+
+    @Autowired
+    private ModeloRepository modeloRepository;
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE )
@@ -58,6 +62,7 @@ public class VeiculoController {
     @PostMapping
     public ResponseEntity<?> create(@RequestBody @Valid  VeiculoDTOS veiculoDTOS){
         Veiculo veiculo = new Veiculo();
+        veiculo.setModelo(modeloRepository.getById(veiculoDTOS.getModelo()));
         BeanUtils.copyProperties(veiculoDTOS,veiculo);
 
         return service.create(veiculo);

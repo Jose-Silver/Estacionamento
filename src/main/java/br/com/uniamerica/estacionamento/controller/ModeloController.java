@@ -2,22 +2,19 @@ package br.com.uniamerica.estacionamento.controller;
 
 import br.com.uniamerica.estacionamento.controller.exeption.NotFoundException;
 import br.com.uniamerica.estacionamento.dtos.ModeloDTOS;
-import br.com.uniamerica.estacionamento.entity.Modelo;
+
 import br.com.uniamerica.estacionamento.repository.MarcaRepository;
 import br.com.uniamerica.estacionamento.service.ModeloService;
 import jakarta.validation.Valid;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.yaml.snakeyaml.constructor.DuplicateKeyException;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -62,12 +59,9 @@ public class ModeloController {
 
     @PostMapping
     public ResponseEntity<?> create(@RequestBody @Valid  ModeloDTOS modeloDTOS){
-        Modelo modelo1 = new Modelo();
-        modelo1.setNome(modeloDTOS.getNome());
-        modelo1.setMarca(marcarepository.getById(modeloDTOS.getMarca()));
-        modelo1.setAtualizacao(LocalDateTime.now());
 
-        return service.create(modelo1);
+        return service.create(modeloDTOS);
+       //return  ResponseEntity.ok().body(modeloDTOS);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -89,6 +83,7 @@ public class ModeloController {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
     }
 
+
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateEntity(@PathVariable Long id, @RequestBody  @Valid ModeloDTOS modeloDTOS) {
 
@@ -103,6 +98,14 @@ public class ModeloController {
     }
 //    }
 
+//    @ExceptionHandler(ConstraintViolationException.class)
+//    public ResponseEntity<ErrorResponse> handleConstraintViolationException(ConstraintViolationException ex) {
+//        ErrorResponse errorResponse = new ErrorResponse();
+//        errorResponse.setMessage("Foreign key constraint violation");
+//        errorResponse.setDetalhe(ex.getCause().getMessage());
+//
+//        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+//    }
 
 
 

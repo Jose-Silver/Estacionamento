@@ -1,5 +1,6 @@
 package br.com.uniamerica.estacionamento.service;
 
+import br.com.uniamerica.estacionamento.controller.exeption.serverErrorMessage;
 import br.com.uniamerica.estacionamento.dtos.MarcaDTOS;
 import br.com.uniamerica.estacionamento.entity.Condutor;
 import br.com.uniamerica.estacionamento.entity.Marca;
@@ -70,7 +71,9 @@ public class MarcaService {
     }
 
     @Transactional
-    public ResponseEntity<?> create(Marca marca) {
+    public ResponseEntity<?> create(MarcaDTOS marcaDTOS) {
+        Marca marca = new Marca();
+        BeanUtils.copyProperties(marcaDTOS, marca);
 
         try {
             marca.setAtivo(true);
@@ -79,7 +82,7 @@ public class MarcaService {
             return ResponseEntity.status(HttpStatus.CREATED).body(marca);
         } catch (Exception e) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            return ResponseEntity.badRequest().body(e.toString());
+            return ResponseEntity.badRequest().body(e.getCause().getCause().getLocalizedMessage());
         }
 
     }

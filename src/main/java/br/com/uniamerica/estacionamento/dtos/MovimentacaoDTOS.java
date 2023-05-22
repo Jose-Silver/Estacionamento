@@ -1,5 +1,7 @@
 package br.com.uniamerica.estacionamento.dtos;
 
+import br.com.uniamerica.estacionamento.entity.Condutor;
+import br.com.uniamerica.estacionamento.entity.Veiculo;
 import br.com.uniamerica.estacionamento.repository.CondutorRepository;
 import br.com.uniamerica.estacionamento.repository.VeiculoRepository;
 import jakarta.validation.constraints.NotBlank;
@@ -14,11 +16,17 @@ import java.time.LocalTime;
 public class MovimentacaoDTOS {
 
 
+    @Autowired
+    private VeiculoRepository veiculoRepository;
+    @Autowired
+    private CondutorRepository condutorRepository;
+
+
    @NotBlank(message = "veiculo_id nao pode ser inexistente")
-    private Long veiculo_id;
+    private Veiculo veiculo;
     @NotBlank(message = "condutor_id nao pode ser inexistente")
 
-    private Long condutor_id;
+    private Condutor condutor ;
     @NotBlank(message = "entrada nao pode ser inexistente")
 
     private LocalDateTime entrada;
@@ -34,8 +42,8 @@ public class MovimentacaoDTOS {
 
 
     public MovimentacaoDTOS(CondutorRepository condutor_idRepository, VeiculoRepository veiculo_idRepository, Long veiculo_id, Long condutor_id, LocalDateTime entrada, LocalDateTime saida, LocalTime tempo, LocalTime tempoDesconto, LocalTime tempoMulta, BigDecimal valorDesconto, BigDecimal valorMulta, BigDecimal valorTotal, BigDecimal valorHora, BigDecimal valorHoraMulta) {
-        this.veiculo_id = veiculo_id;
-        this.condutor_id = condutor_id;
+        this.veiculo = veiculo_idRepository.getReferenceById(veiculo_id);
+        this.condutor = condutorRepository.getById(condutor_id);
         this.entrada = entrada;
         this.saida = saida;
         this.tempo = tempo;
@@ -49,20 +57,21 @@ public class MovimentacaoDTOS {
     }
 
 
-    public Long getVeiculo() {
-        return veiculo_id;
+    public Veiculo getVeiculo() {
+        return veiculo;
     }
 
-    public void setVeiculo(Long veiculo_id) {
-        this.veiculo_id = veiculo_id;
+    public Veiculo setVeiculo(Long veiculo_id) {
+        this.veiculo = veiculoRepository.getById(veiculo_id);
+                return (this.veiculo);
     }
 
-    public Long getCondutor() {
-        return condutor_id;
+    public Condutor getCondutor() {
+        return this.condutor;
     }
 
     public void setCondutor(Long condutor_id) {
-        this.condutor_id = condutor_id;
+        this.condutor = condutorRepository.getById(condutor_id);
     }
 
     public LocalDateTime getEntrada() {

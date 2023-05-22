@@ -14,4 +14,7 @@ public class Marca extends AbstractEntity {
     @Getter @Setter
     @Column(name = "nome", nullable = false, unique = true, length = 50)
     private String nome;
+
+
+
 }

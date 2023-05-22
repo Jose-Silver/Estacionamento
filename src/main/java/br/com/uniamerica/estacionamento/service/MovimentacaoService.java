@@ -56,12 +56,12 @@ public class MovimentacaoService {
     @Transactional
     public ResponseEntity<?> update(Long id, MovimentacaoDTOS movimentacaoDTOS) {
         Optional<Movimentacao> optionalMovimentacao = repository.findById(id);
-        Optional<Condutor> optionalCondutor = condutorRepository.findById(movimentacaoDTOS.getCondutor_id());
-        Optional<Veiculo> optionalVeiculo = veiculoRepository.findById(movimentacaoDTOS.getVeiculo_id());
-        if (optionalCondutor.isEmpty()) {
+        Condutor optionalCondutor = movimentacaoDTOS.getCondutor();
+        Veiculo optionalVeiculo = movimentacaoDTOS.getVeiculo();
+        if (optionalCondutor == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Condutor not found with ID: " + id);
         }
-        if (optionalVeiculo.isEmpty()) {
+        if (optionalVeiculo == null ) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Veiculo not found with ID: " + id);
         }
 
@@ -70,12 +70,11 @@ public class MovimentacaoService {
         } else {
 
             Movimentacao movimentacao1 = optionalMovimentacao.get();
-            Condutor condutor1 = optionalCondutor.get();
-            Veiculo veiculo1 = optionalVeiculo.get();
+//            Veiculo veiculo1 = optionalVeiculo.get();
             BeanUtils.copyProperties(movimentacaoDTOS,movimentacao1);
             movimentacao1.setAtivo(true);
-            movimentacao1.setCondutor(condutor1);
-            movimentacao1.setVeiculo(veiculo1);
+//            movimentacao1.setCondutor(condutor1);
+//            movimentacao1.setVeiculo(veiculo1);
             movimentacao1.setAtualizacao(LocalDateTime.now());
             movimentacao1.setEntrada(LocalDateTime.now());
             repository.save(movimentacao1);
@@ -85,27 +84,32 @@ public class MovimentacaoService {
 
     @Transactional
     public ResponseEntity<?> create(MovimentacaoDTOS movimentacaoDTOS) {
-        Optional<Condutor> optionalCondutor = condutorRepository.findById(movimentacaoDTOS.getCondutor_id());
-        Optional<Veiculo> optionalVeiculo = veiculoRepository.findById(movimentacaoDTOS.getVeiculo_id());
-        if (optionalCondutor.isEmpty()) {
+       Condutor optionalCondutor = movimentacaoDTOS.getCondutor();
+        Veiculo optionalVeiculo = movimentacaoDTOS.getVeiculo();
+        if (optionalCondutor == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Condutor not found ");
         }
-        if (optionalVeiculo.isEmpty()) {
+        if (optionalVeiculo == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Veiculo not found");
         }
 
+            try {
+                Movimentacao movimentacao1 = new Movimentacao();
+//            Condutor condutor1 = optionalCondutor.get();
+//            Veiculo veiculo1 = optionalVeiculo.get();
+                BeanUtils.copyProperties(movimentacaoDTOS, movimentacao1);
+                movimentacao1.setAtivo(true);
+//            movimentacao1.setCondutor(condutor1);
+//            movimentacao1.setVeiculo(veiculo1);
+                movimentacao1.setAtualizacao(LocalDateTime.now());
+                movimentacao1.setEntrada(LocalDateTime.now());
+                repository.save(movimentacao1);
+                return ResponseEntity.ok().body("Movimentacao atualizado com sucesso");
+            } catch (Exception e){
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                return ResponseEntity.badRequest().body(e.getCause().getCause().getLocalizedMessage());
 
-            Movimentacao movimentacao1 = new Movimentacao();
-            Condutor condutor1 = optionalCondutor.get();
-            Veiculo veiculo1 = optionalVeiculo.get();
-            BeanUtils.copyProperties(movimentacaoDTOS,movimentacao1);
-            movimentacao1.setAtivo(true);
-            movimentacao1.setCondutor(condutor1);
-            movimentacao1.setVeiculo(veiculo1);
-            movimentacao1.setAtualizacao(LocalDateTime.now());
-            movimentacao1.setEntrada(LocalDateTime.now());
-            repository.save(movimentacao1);
-            return ResponseEntity.ok().body("Movimentacao atualizado com sucesso");
+            }
         }
 
 

@@ -74,13 +74,15 @@ public class VeiculoService {
 
 
             try {
+
                 veiculo.setAtivo(true);
                 veiculoRepository.save(veiculo);
                 TransactionAspectSupport.currentTransactionStatus().flush();
                 return ResponseEntity.status(HttpStatus.CREATED).body(veiculo);
             } catch (Exception e) {
                 TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-                return ResponseEntity.badRequest().body(e.toString());
+                return ResponseEntity.badRequest().body(e.getCause().getCause().getLocalizedMessage());
+
             }
         } else {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("placa ja cadastrada");
