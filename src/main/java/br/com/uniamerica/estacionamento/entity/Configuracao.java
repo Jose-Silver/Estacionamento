@@ -1,10 +1,11 @@
 package br.com.uniamerica.estacionamento.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.annotation.PostConstruct;
+import jakarta.persistence.*;
 import jakarta.persistence.criteria.CriteriaBuilder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.cglib.core.Local;
 
@@ -18,13 +19,15 @@ import java.time.LocalTime;
 
 @Entity
 @Table(name = "configuracao", schema = "public")
-public class Configuracao extends AbstractEntity{
+@AllArgsConstructor
+@NoArgsConstructor
+public class  Configuracao extends AbstractEntity{
     @Getter @Setter
     @Column(name = "valor_hora")
     private BigDecimal valorHora;
     @Getter @Setter
     @Column(name = "valor_minuto_hora")
-    private BigDecimal valorMinutoHora;
+    private BigDecimal valorMinutoMulta;
     @Getter @Setter
     @Column(name = "inicio_expediente")
     private LocalTime inicioExpediente;
@@ -33,7 +36,7 @@ public class Configuracao extends AbstractEntity{
     private LocalTime fimExpediente;
     @Getter @Setter
     @Column(name = "tempo_para_desconto")
-    private LocalTime tempoParaDesconto;
+    private Long  tempoParaDesconto;
     @Getter @Setter
     @Column(name = "tempo_de_desconto")
     private LocalTime tempoDeDesconto;
@@ -51,4 +54,17 @@ public class Configuracao extends AbstractEntity{
     private int vagasVan;
 
 
+
+    public void init() {
+        this.valorHora = BigDecimal.valueOf(10);
+        this.valorMinutoMulta = BigDecimal.valueOf(2);
+        this.inicioExpediente = LocalTime.of(6,0);
+        this.fimExpediente = LocalTime.of(20,0);;
+        this.tempoParaDesconto = 50L;
+        this.tempoDeDesconto = LocalTime.of(5,0);
+        this.gerarDesconto = true;
+        this.vagasCarro = 50;
+        this.vagasMoto = 20;
+        this.vagasVan = 5;
+    }
 }

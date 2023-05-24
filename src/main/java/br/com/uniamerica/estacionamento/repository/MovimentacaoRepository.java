@@ -11,4 +11,6 @@ public interface MovimentacaoRepository extends JpaRepository<Movimentacao, Long
 
     List<Movimentacao> findByCondutorId(Long condutorId);
     List<Movimentacao> findByVeiculoId(Long condutorId);
+    List<Movimentacao> findByVeiculoPlate(String plate);
+
 }

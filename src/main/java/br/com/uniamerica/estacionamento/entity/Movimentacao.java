@@ -38,7 +38,7 @@ public class Movimentacao extends AbstractEntity{
     private LocalTime tempoDesconto;
     @Getter @Setter
     @Column(name = "tempo_multa")
-    private LocalTime tempoMulta;
+    private Long tempoMulta;
     @Getter @Setter
     @Column(name = "valor_desconto")
     private BigDecimal valorDesconto;

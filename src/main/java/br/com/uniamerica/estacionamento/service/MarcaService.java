@@ -83,6 +83,7 @@ public class MarcaService {
         } catch (Exception e) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return ResponseEntity.badRequest().body(e.getCause().getCause().getLocalizedMessage());
+
         }
 
     }
