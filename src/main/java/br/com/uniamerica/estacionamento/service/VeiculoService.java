@@ -63,7 +63,7 @@ public class VeiculoService {
             BeanUtils.copyProperties(veiculoDTOS, veiculo);
             veiculo.setAtualizacao(LocalDateTime.now());
             veiculoRepository.save(veiculo);
-            return ResponseEntity.ok().body("Veiculo atualizado com sucesso");
+            return ResponseEntity.ok().body(veiculo);
         }
     }
 

@@ -5,6 +5,7 @@ import br.com.uniamerica.estacionamento.entity.Veiculo;
 import br.com.uniamerica.estacionamento.repository.CondutorRepository;
 import br.com.uniamerica.estacionamento.repository.VeiculoRepository;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,9 +27,9 @@ public class MovimentacaoDTOS {
     private CondutorRepository condutorRepository;
 
 
-    @NotBlank(message = "veiculo_id nao pode ser inexistente")
+    @NotNull(message = "veiculo_id nao pode ser inexistente")
     private Long veiculo;
-    @NotBlank(message = "condutor_id nao pode ser inexistente")
+    @NotNull(message = "condutor_id nao pode ser inexistente")
     private Long condutor;
 
 

@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.UniqueElements;
+import org.hibernate.validator.constraints.br.CPF;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -26,6 +27,7 @@ public class CondutorDTOS {
 
    @Size(max = 20, message = "o cpf nao pode conter mais que 20 caracteres")
     @NotBlank(message = "Erro: cpf em branco")
+   //@CPF
     private String cpf;
     @Size(max = 20, message = "o telefone nao pode conter mais que 20 caracteres")
 

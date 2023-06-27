@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -76,8 +77,8 @@ public class CondutorService {
 
             try {
                 condutor.setAtivo(true);
-                condutor.setTempoPago(LocalTime.of(0, 0));
-                condutor.setTempoDesconto(LocalTime.of(0, 0));
+                condutor.setTempoPago(BigDecimal.valueOf(0L));
+                condutor.setTempoDesconto(BigDecimal.valueOf(0L));
                 condutorRepository.save(condutor);
                 TransactionAspectSupport.currentTransactionStatus().flush();
                 return ResponseEntity.status(HttpStatus.CREATED).body(condutor);
@@ -101,7 +102,6 @@ public ResponseEntity<?> delete (Long id) {
             condutorRepository.delete(condutor);
             return ResponseEntity.ok().build();
         } else {
-
             condutor.setAtivo(false);
             this.condutorRepository.save(condutor);
             return ResponseEntity.ok().build();

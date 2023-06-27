@@ -1,63 +1,73 @@
 package br.com.uniamerica.estacionamento.entity;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
+
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 
-
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
 @Entity
-@Table(name = "movimentacao", schema = "public")
-public class Movimentacao extends AbstractEntity{
+@Table(name = "movimentacoes", schema = "public")
+public class Movimentacao extends AbstractEntity {
+
     @Getter @Setter
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "veiculo_id", nullable = false, unique = true)
+    @ManyToOne
+    @JoinColumn(name = "id_veiculo", nullable = false)
     private Veiculo veiculo;
+
     @Getter @Setter
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "condutor_id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "id_condutor", nullable = false)
     private Condutor condutor;
+
     @Getter @Setter
-    @Column(name = "entrada",nullable = false)
+    @Column(name = "entrada", nullable = false)
     private LocalDateTime entrada;
+
     @Getter @Setter
-    @Column(name = "saida")
+    @Column(name = "saida", nullable = true)
     private LocalDateTime saida;
+
     @Getter @Setter
-    @Column(name = "tempo")
-    private LocalTime tempo;
+    @Column(name = "tempo_horas", nullable = true)
+    private Integer tempoHoras;
+
     @Getter @Setter
-    @Column(name = "tempo_desconto")
+    @Column(name = "tempo_minutos", nullable = true)
+    private Integer tempoMinutos;
+
+    @Getter @Setter
+    @Column(name = "tempo_desconto", nullable = true)
     private LocalTime tempoDesconto;
+
     @Getter @Setter
-    @Column(name = "tempo_multa")
-    private Long tempoMulta;
+    @Column(name = "tempo_multa", nullable = true)
+    private LocalTime tempoMulta;
+
     @Getter @Setter
-    @Column(name = "valor_desconto")
-    private BigDecimal valorDesconto;
-    @Getter @Setter
-    @Column(name = "valor_multa")
-    private BigDecimal valorMulta;
-    @Getter @Setter
-    @Column(name = "valor_total")
+    @Column(name = "valor_total", nullable = true)
     private BigDecimal valorTotal;
+
     @Getter @Setter
-    @Column(name = "valor_hora")
+    @Column(name = "valor_desconto", nullable = true)
+    private BigDecimal valorDesconto;
+
+    @Getter @Setter
+    @Column(name = "valor_multa", nullable = true)
+    private BigDecimal valorMulta;
+
+    @Getter @Setter
+    @Column(name = "valor_hora", nullable = true)
     private BigDecimal valorHora;
+
     @Getter @Setter
-    @Column(name = "valor_hora_multa")
-    private BigDecimal valorHoraMulta;
+    @Column(name = "valor_minuto_multa", nullable = true)
+    private BigDecimal valorMinutoMulta;
 
-        public Movimentacao() {
-        }
-
-
-    }
-
+}

@@ -3,8 +3,8 @@ package br.com.uniamerica.estacionamento.service;
 import br.com.uniamerica.estacionamento.dtos.MovimentacaoDTOS;
 import br.com.uniamerica.estacionamento.entity.*;
 import br.com.uniamerica.estacionamento.entity.Movimentacao;
+import br.com.uniamerica.estacionamento.relatorio;
 import br.com.uniamerica.estacionamento.repository.*;
-import br.com.uniamerica.estacionamento.repository.MovimentacaoRepository;
 import br.com.uniamerica.estacionamento.repository.MovimentacaoRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
@@ -13,8 +13,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.util.Assert;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.*;
 import java.util.List;
 import java.util.Optional;
@@ -104,7 +106,7 @@ public class MovimentacaoService {
                 movimentacao1.setAtualizacao(LocalDateTime.now());
                 movimentacao1.setEntrada(LocalDateTime.now());
                 repository.save(movimentacao1);
-                return ResponseEntity.ok().body("Movimentacao atualizado com sucesso");
+                return ResponseEntity.ok().body(movimentacao1);
             } catch (Exception e){
                 TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
                 return ResponseEntity.badRequest().body(e.getCause().getCause().getLocalizedMessage());
@@ -112,8 +114,66 @@ public class MovimentacaoService {
             }
         }
 
+    public relatorio saida (final Long id){
 
+        // Verifica se a movimentação existe
+        final Movimentacao movBanco = this.repository.findById(id).orElse(null);
+        Assert.isTrue(movBanco != null, "Não foi possivel identificar o registro informado");
 
+        // Identifica o horário da saida e calcula o tempo entre os dois horários
+        final LocalDateTime saida = LocalDateTime.now();
+        Duration duracao = Duration.between(movBanco.getEntrada(), saida);
+
+        // Pega os valores de configuração
+        final Configuracao config = this.configuracaoRepository.findById(1L).orElse(null);
+        Assert.isTrue(config != null, "Configuracoes nao cadastradas");
+
+        // Pega o desconto do cliente
+        final Condutor condutor = this.condutorRepository.findById(movBanco.getCondutor().getId()).orElse(null);
+        Assert.isTrue(condutor != null, "Condutor nao encontrado");
+
+        // Seta saida e tempo
+        movBanco.setSaida(saida);
+        movBanco.setTempoHoras(duracao.toHoursPart());
+        movBanco.setTempoMinutos(duracao.toMinutesPart());
+
+        // Calcula o preco de acordo com o tempo passado
+        final BigDecimal horas = BigDecimal.valueOf(duracao.toHoursPart());
+        final BigDecimal minutos = BigDecimal.valueOf(duracao.toMinutesPart()).divide(BigDecimal.valueOf(60), 2, RoundingMode.HALF_EVEN);
+        BigDecimal preco = config.getValorHora().multiply(horas).add(config.getValorHora().multiply(minutos));
+
+        final BigDecimal tempoPago = condutor.getTempoPago() != null ? condutor.getTempoPago() : new BigDecimal(0);
+
+        BigDecimal valor_desc;
+
+        if (tempoPago.compareTo(new BigDecimal(config.getTempoParaDesconto())) >= 0) {
+            valor_desc = BigDecimal.valueOf(config.getTempoDeDesconto());
+
+            movBanco.setValorDesconto(valor_desc);
+            condutor.setTempoPago(BigDecimal.ZERO);
+        }else {
+            valor_desc = BigDecimal.ZERO;
+        }
+
+        BigDecimal valorTotal = preco.subtract(valor_desc);
+        movBanco.setValorTotal(valorTotal);
+
+        movBanco.setValorHora(config.getValorHora());
+        movBanco.setValorMinutoMulta(config.getValorMinutoMulta());
+
+        if (config.getGerarDesconto()) {
+            condutor.setTempoPago(tempoPago.add(horas.add(minutos)));
+        }
+
+        this.condutorRepository.save(condutor);
+        this.repository.save(movBanco);
+
+        return new relatorio (movBanco.getEntrada(), movBanco.getSaida(), movBanco.getCondutor(), movBanco.getVeiculo(), horas.intValue(),
+                tempoPago.setScale(0, RoundingMode.HALF_EVEN),
+                preco.subtract(valor_desc).setScale(2, RoundingMode.HALF_EVEN),
+                valor_desc.setScale(2, RoundingMode.HALF_EVEN));
+    }
+/*
     @Transactional
     public ResponseEntity<?> delete (Long id) {
 
@@ -151,11 +211,25 @@ public class MovimentacaoService {
                 long minutes = duration.toMinutes();
                 movimentacao.setTempoMulta(minutes);
 
-                movimentacao.setValorHoraMulta(config.getValorMinutoMulta().multiply(BigDecimal.valueOf(minutes)));
+                movimentacao.setValorMulta(config.getValorMinutoMulta().multiply(BigDecimal.valueOf(minutes)));
 
             }
 
+            Condutor condutor =  condutorRepository.getById(movimentacao.getCondutor().getId());
 
+            condutor.setTempoPago( condutor.getTempoPago() + movimentacao.getTempo().getHour());
+            if (condutor.getTempoPago() > config.getTempoParaDesconto()) {
+                condutor.setTempoPago( condutor.getTempoPago() - config.getTempoParaDesconto());
+                condutor.setTempoDesconto( condutor.getTempoDesconto() + config.getTempoDeDesconto());
+            }
+            // SE O CONDUTOR TIVER DESCONTO, ENTAO SUBTRAIA O VALOR
+            if (condutor.getTempoDesconto() > 0 ) {
+                movimentacao.setValorTotal((config.getValorHora().multiply(BigDecimal.valueOf(movimentacao.getTempo().getHour()))).add(movimentacao.getValorMulta()).subtract(config.getValorHora().multiply(BigDecimal.valueOf(condutor.getTempoDesconto()))));
+
+
+            } else {
+                movimentacao.setValorTotal((config.getValorHora().multiply(BigDecimal.valueOf(movimentacao.getTempo().getHour()))).add(movimentacao.getValorMulta()));
+            }
             movimentacao.setAtivo(false);
             return ResponseEntity.ok().build();
 
@@ -168,6 +242,9 @@ public class MovimentacaoService {
 
 
     }
+
+
+ */
 
     @Transactional
     public ResponseEntity<?> findByPlaca (String placa) {
